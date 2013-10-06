@@ -1,0 +1,16 @@
+[
+  {
+    "startTime": 6144,
+    "languages": {
+      "ko": "Lorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur"
+    },
+    "endTime": 10102
+  },
+  {
+    "startTime": 17976,
+    "languages": {
+      "ko": "Lorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur"
+    },
+    "endTime": 7007908
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "name": "sami-parser",
+  "version": "0.0.1",
+  "description": "SAMI parser",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --compilers coffee:coffee-script ./test/test.coffee "
+  },
+  "keywords": [
+    "SAMI",
+    "parser"
+  ],
+  "author": "Constantine Kim",
+  "license": "BSD-2-Clause",
+  "devDependencies": {
+    "coffee-script": "~1.6.3",
+    "chai": "~1.8.0",
+    "mocha": "~1.13.0"
+  },
+  "dependencies": {
+    "lodash": "~2.0.0",
+    "sax": "~0.5.5",
+    "css-parse": "~1.5.3"
+  }
+}
