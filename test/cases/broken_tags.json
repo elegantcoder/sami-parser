@@ -1,0 +1,24 @@
+{
+  "result": [
+    {
+      "startTime": 17976,
+      "languages": {
+        "ko": "Lorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur"
+      },
+      "endTime": 1797416
+    },
+    {
+      "startTime": 1797416,
+      "languages": {
+        "ko": "Lorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consecteturLorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur"
+      },
+      "endTime": 7007908
+    }
+  ],
+  "errors": [
+    {
+      "message": "ERROR_BROKEN_TAGS",
+      "line": 18
+    }
+  ]
+}

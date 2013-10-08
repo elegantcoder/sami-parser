@@ -66,11 +66,15 @@ class Parser
       else
         sliced = str.slice(startTagIdx)
 
-      lineNum += str.slice(0, startTagIdx).match(/\n/g)?.length or 0 
-      lineNum += sliced.match(/\n/g)?.length or 0
+      lineNum += str.slice(0, startTagIdx).match(/\r\n?|\n/g)?.length or 0 
+      if isBroken = /<[a-z]*[^>]*<[a-z]*/g.test(sliced)
+        e = new Error('ERROR_BROKEN_TAGS')
+        e.line = lineNum
+        @errors.push(e)
 
       ret.push(sliced)
       str = str.slice(startTagIdx+nextStartTagIdx)
+      lineNum += sliced.match(/\r\n?|\n/g)?.length or 0
 
     return ret
 
