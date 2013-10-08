@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "lodash": "~2.0.0",
-    "sax": "~0.5.5",
     "css-parse": "~1.5.3"
   }
 }
