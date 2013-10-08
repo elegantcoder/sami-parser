@@ -20,7 +20,9 @@ P { margin-left:2pt; margin-right:2pt; margin-bottom:1pt;
 <font size=2>Lorem ipsum dolor sit amet, consectetur
 <SYNC Start=10102><P Class=KRCC>&nbsp;
 <SYNC Start=17976><P Class=KRCC>
-<font face=돋움>Lorem ipsum dolor sit amet, consectetur<br><b>Lorem ipsum dolor sit amet, consectetur</b><br><font size=2>Lorem ipsum dolor sit amet, consectetur
-<SYNC Start=7007908><P Class=ENCC>&nbsp;
+<font face=돋움>Lorem ipsum dolor sit amet, consectetur<br><b>Lorem ipsum dolor sit amet, consec
+tetur</b><br><font size=2>Lorem ipsum dolor sit amet, consectetur
+<SYNC Start
+=  7007908 ><P Class=ENCC>&nbsp;
 </BODY>
 </SAMI>

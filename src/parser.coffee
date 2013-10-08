@@ -1,9 +1,6 @@
 _ = require 'lodash'
 cssParse = require 'css-parse'
 
-ERROR_INVALID_SYNC = 0
-ERROR_UNAVAILABLE_LANGUAGE = 1
-
 # from http://phpjs.org/functions/strip_tags/
 `function strip_tags(input, allowed) {
   // http://kevin.vanzonneveld.net
@@ -114,35 +111,33 @@ class Parser
     return ret
 
   getAvailableLanguages: (str) ->
-    matched = str.match(/<style[^>]*>([\s\S]*?)<\/style[^>]*>/i)?[1] or ''
-    if matched
-      try
-        matched = matched.replace(/(<!--|-->)/g, '')
-        parsed = cssParse matched
+    try
+      matched = str.match(/<style[^>]*>([\s\S]*?)<\/style[^>]*>/i)?[1] or ''
+      matched = matched.replace(/(<!--|-->)/g, '')
+      parsed = cssParse matched
 
-        for rule in parsed.stylesheet.rules
-          # currently support single language, class selectors only
-          selector = rule.selectors[0]
-          if selector?[0] is '.'
-            for declaration in rule.declarations
-              if declaration.property.toLowerCase() is 'lang'
-                className = selector.slice(1) # pass dot (.ENCC -> ENCC)
-                language = {
-                  className: className
-                  lang: declaration.value.slice(0,2)
-                  reClassName: new RegExp("class[^=]*?=[\"']?(#{className})['\"]?", 'i')
-                }
-                @availableLanguages.push language
-                  
-      catch e
-        @errors.push error = new Error(ERROR_UNAVAILABLE_LANGUAGE)
-        @availableLanguages.push Parser.defaultLanguage # parse failed
-        return
+      for rule in parsed.stylesheet.rules
+        # currently support single language, class selectors only
+        selector = rule.selectors[0]
+        if selector?[0] is '.'
+          for declaration in rule.declarations
+            if declaration.property.toLowerCase() is 'lang'
+              className = selector.slice(1) # pass dot (.ENCC -> ENCC)
+              language = {
+                className: className
+                lang: declaration.value.slice(0,2)
+                reClassName: new RegExp("class[^=]*?=[\"']?(#{className})['\"]?", 'i')
+              }
+              @availableLanguages.push language
+    catch e
+      @errors.push error = new Error('ERROR_UNAVAILABLE_LANGUAGE')
+      @availableLanguages.push Parser.defaultLanguage # parse failed
+      return
 
   parse: (str) ->
     @getAvailableLanguages(str)
     syncElements = @getSyncElements(str)
-    elements = @_parse(syncElements)
-    return elements
+    result = @_parse(syncElements)
+    return {result, errors: @errors}
 
 module.exports = Parser
