@@ -59,8 +59,8 @@ class Parser
 
     while true
       startTagIdx = str.search(/<sync/i)
-      break if nextStartTagIdx < 0 || startTagIdx < 0
-      nextStartTagIdx = str.slice(startTagIdx+1).search(/(<sync|<\/body|<\/sami)/i)+1
+      break if nextStartTagIdx <= 0 || startTagIdx < 0
+      nextStartTagIdx = str.slice(startTagIdx+1).search(/<sync/i)+1
       if nextStartTagIdx > 0
         sliced = str.slice(startTagIdx, startTagIdx+nextStartTagIdx)
       else
@@ -70,6 +70,7 @@ class Parser
       if isBroken = /<[a-z]*[^>]*<[a-z]*/g.test(sliced)
         e = new Error('ERROR_BROKEN_TAGS')
         e.line = lineNum
+        e.context = sliced
         @errors.push(e)
 
       ret.push(sliced)
@@ -84,7 +85,7 @@ class Parser
 
     # sort by start time
     elements = _.sortBy(elements, (syncElement) ->
-      +syncElement.match(/<sync[^>]+?start[^=]*=[^0-9]*?([0-9]*)[^0-9]*?/i)?[1] or -1
+      +syncElement.match(/<sync[^>]+?start[^=]*=[^0-9]*([0-9]*)[^0-9]*/i)?[1] or -1
     )
 
     elements.forEach((element) =>
