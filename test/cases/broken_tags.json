@@ -1,24 +1,54 @@
 {
   "result": [
     {
-      "startTime": 17976,
-      "languages": {
-        "ko": "Lorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur"
-      },
-      "endTime": 1797416
-    },
-    {
-      "startTime": 1797416,
+      "startTime": 2,
       "languages": {
         "ko": "Lorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consecteturLorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur"
       },
-      "endTime": 7007908
+      "endTime": 3
+    },
+    {
+      "startTime": 1436413,
+      "languages": {
+        "ko": "뭐 때문인지 알아야지요<<"
+      },
+      "endTime": 1436414
+    },
+    {
+      "startTime": 2306070,
+      "languages": {
+        "kr": "<P Class=ENCC한 시간이나 앉아서 기다리게 만들 거라는군.<"
+      },
+      "endTime": 2313871
+    },
+    {
+      "startTime": 6303689,
+      "languages": {
+        "ko": "지금> 지금< 지금<"
+      },
+      "endTime": 6303690
     }
   ],
   "errors": [
     {
       "message": "ERROR_BROKEN_TAGS",
-      "line": 18
+      "line": 20,
+      "context": "<SYNC Start=2Lorem ipsum<P Class=KRCC>Lorem ipsum dolor sit amet, consectetur<br><b>Lorem ipsum dolor sit amet, consectetur\n<font face=돋움>Lorem ipsum dolor sit amet, consectetur<br><b>Lorem ipsum dolor sit amet, consectetur</b><br>\n<font size=2>Lorem ipsum dolor sit amet, consectetur\n"
+    },
+    {
+      "message": "ERROR_BROKEN_TAGS",
+      "line": 25,
+      "context": "<SYNC Start=6303689><P Class=KRCC>\n지금> 지금< 지금\n<\n"
+    },
+    {
+      "message": "ERROR_BROKEN_TAGS",
+      "line": 29,
+      "context": "<SYNC Start=1436413><P Class=KRCC>\n뭐 때문인지 알아야지요<\n<\n"
+    },
+    {
+      "message": "ERROR_BROKEN_TAGS",
+      "line": 33,
+      "context": "<SYNC Start=2306070><P Class=ENCC한>\n<P Class=ENCC한 시간이나 앉아서 기다리게 만들 거라는군.\n<\n"
     }
   ]
 }

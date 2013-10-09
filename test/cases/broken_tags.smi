@@ -11,18 +11,28 @@ P { margin-left:2pt; margin-right:2pt; margin-bottom:1pt;
 #STDPrn { Name:Standard Print; }
 #LargePrn { Name:Large Print (26pt); font-size:26pt; }
 #SmallPrn { Name:Small Print (14pt); font-size:14pt; }
+.ENCC, { Name:ENCC,; lang:kr-KR; SAMIType:CC; }
+.ENCC한 { Name:ENCC한; lang:kr-KR; SAMIType:CC; }
 -->
 </STYLE>
 </HEAD>
 <BODY>
-<SYNC Start=1797416Lorem ipsum<P Class=KRCC>Lorem ipsum dolor sit amet, consectetur<br><b>Lorem ipsum dolor sit amet, consectetur
+<SYNC Start=2Lorem ipsum<P Class=KRCC>Lorem ipsum dolor sit amet, consectetur<br><b>Lorem ipsum dolor sit amet, consectetur
 <font face=돋움>Lorem ipsum dolor sit amet, consectetur<br><b>Lorem ipsum dolor sit amet, consectetur</b><br>
 <font size=2>Lorem ipsum dolor sit amet, consectetur
-<SYNC Start=10102><P Class=KRCC>&nbsp;
-<SYNC Start=17976><P Class=KRCC>
-<font face=돋움>Lorem ipsum dolor sit amet, consectetur<br><b>Lorem ipsum dolor sit amet, consec
-tetur</b><br><font size=2>Lorem ipsum dolor sit amet, consectetur
-<SYNC Start
-=  7007908 ><P Class=ENCC>&nbsp;
+<SYNC Start=3><P Class=KRCC>&nbsp;
+
+<SYNC Start=6303689><P Class=KRCC>
+지금> 지금< 지금
+<
+<SYNC Start=6303690><P Class=KRCC>&nbsp;
+<SYNC Start=1436413><P Class=KRCC>
+뭐 때문인지 알아야지요<
+<
+<SYNC Start=1436414>&nbsp;
+<SYNC Start=2306070><P Class=ENCC한>
+<P Class=ENCC한 시간이나 앉아서 기다리게 만들 거라는군.
+<
+<SYNC Start=2313871><P Class=ENCC한>&nbsp;
 </BODY>
 </SAMI>

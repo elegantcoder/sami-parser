@@ -1,5 +1,6 @@
 _ = require 'lodash'
 cssParse = require 'css-parse'
+langCodes = require './lang_codes.js'
 
 # from http://phpjs.org/functions/strip_tags/
 `function strip_tags(input, allowed) {
@@ -128,12 +129,16 @@ class Parser
           for declaration in rule.declarations
             if declaration.property.toLowerCase() is 'lang'
               className = selector.slice(1) # pass dot (.ENCC -> ENCC)
-              language = {
-                className: className
-                lang: declaration.value.slice(0,2)
-                reClassName: new RegExp("class[^=]*?=[\"']?(#{className})['\"]?", 'i')
-              }
-              @availableLanguages.push language
+              lang = declaration.value.slice(0,2)
+              if ~langCodes.indexOf lang
+                language = {
+                  className: className
+                  lang: lang
+                  reClassName: new RegExp("class[^=]*?=[\"']?(#{className})['\"]?", 'i')
+                }
+                @availableLanguages.push language
+              else
+                throw Error()
     catch e
       @errors.push error = new Error('ERROR_UNAVAILABLE_LANGUAGE')
       @availableLanguages.push Parser.defaultLanguage # parse failed
