@@ -54,7 +54,7 @@ class Parser
     @errors = []
     @availableLanguages = []
 
-  getSyncElements: (str) ->
+  _parse: (str) ->
     lineNum = 1
     ret = []
 
@@ -63,58 +63,61 @@ class Parser
       break if nextStartTagIdx <= 0 || startTagIdx < 0
       nextStartTagIdx = str.slice(startTagIdx+1).search(/<sync/i)+1
       if nextStartTagIdx > 0
-        sliced = str.slice(startTagIdx, startTagIdx+nextStartTagIdx)
+        element = str.slice(startTagIdx, startTagIdx+nextStartTagIdx)
       else
-        sliced = str.slice(startTagIdx)
+        element = str.slice(startTagIdx)
 
       lineNum += str.slice(0, startTagIdx).match(/\r\n?|\n/g)?.length or 0 
-      if isBroken = /<[a-z]*[^>]*<[a-z]*/g.test(sliced)
+      if isBroken = /<[a-z]*[^>]*<[a-z]*/g.test(element)
         e = new Error('ERROR_BROKEN_TAGS')
         e.line = lineNum
-        e.context = sliced
+        e.context = element
         @errors.push(e)
 
-      ret.push(sliced)
       str = str.slice(startTagIdx+nextStartTagIdx)
-      lineNum += sliced.match(/\r\n?|\n/g)?.length or 0
 
-    return ret
+      startTime = +element.match(/<sync[^>]+?start[^=]*=[^0-9]*([0-9]*)["^0-9"]*/i)?[1] or -1
 
-  _parse: (elements) ->
-    ret = []
-    prev = null
+      if startTime < 0
+        e = new Error('ERROR_INVALID_TIME')
+        e.line = lineNum
+        e.context = element
+        @errors.push(e)
 
-    # sort by start time
-    elements = _.sortBy(elements, (syncElement) ->
-      +syncElement.match(/<sync[^>]+?start[^=]*=[^0-9]*([0-9]*)[^0-9]*/i)?[1] or -1
-    )
+      lineNum += element.match(/\r\n?|\n/g)?.length or 0
 
-    elements.forEach((element) =>
-      startTime = +element.match(/<sync[^>]+?start[^=]*=[^0-9]*([0-9]*)[^0-9]*/i)?[1] or 0
       for lang in @availableLanguages when lang.reClassName.test element
         lang = lang.lang
         break;
 
-      lang or= @defaultLanguageCode # language 가 없으면 default
-
-      if prev
-        prev.endTime = startTime
-        ret.push prev
-        prev = null
-
+      lang or= @defaultLanguageCode
       element = element.replace(/[\r\n]/g, '')
       element = element.replace(/<br[^>]*>/ig, "\n")
       innerText = strip_tags(element).trim()
-      unless innerText is '&nbsp;'
-        prev = {startTime, languages: {}}
-        prev.languages[lang] = innerText
+      lang = @getLanguage(element)
+      item = {startTime, languages: {}, contents: innerText}
+      item.languages[lang] = innerText
+      ret.push(item)
+
+    ret = _.sortBy(ret, (syncElement) ->
+      +syncElement.startTime
     )
 
-    # for the last element that is not pushed
-    if prev
-      prev.endTime = prev.startTime + 10000 #arbitrarily, 10 seconds 
-      ret.push prev
+    i = ret.length
+    while i--
+      item = ret[i]
+      ret[i-1]?.endTime = item.startTime
+      if !item.contents or item.contents is '&nbsp;'
+        ret.splice i, 1
+      else
+        delete ret[i].contents
+
     return ret
+
+  getLanguage: (element) ->
+    for lang in @availableLanguages when lang.reClassName.test element
+      return lang.lang
+    return Parser.defaultLanguage.lang
 
   getAvailableLanguages: (str) ->
     try
@@ -140,14 +143,13 @@ class Parser
               else
                 throw Error()
     catch e
-      @errors.push error = new Error('ERROR_UNAVAILABLE_LANGUAGE')
+      @errors.push error = new Error('ERROR_INVALID_LANGUAGE')
       @availableLanguages.push Parser.defaultLanguage # parse failed
       return
 
   parse: (str) ->
     @getAvailableLanguages(str)
-    syncElements = @getSyncElements(str)
-    result = @_parse(syncElements)
+    result = @_parse(str)
     return {result, errors: @errors}
 
 module.exports = Parser

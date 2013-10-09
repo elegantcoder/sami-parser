@@ -17,7 +17,7 @@
   ],
   "errors": [
     {
-      "message": "ERROR_UNAVAILABLE_LANGUAGE"
+      "message": "ERROR_INVALID_LANGUAGE"
     }
   ]
 }
