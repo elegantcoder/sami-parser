@@ -18,7 +18,6 @@
     "mocha": "~1.13.0"
   },
   "dependencies": {
-    "lodash": "~2.0.0",
     "css-parse": "~1.5.3"
   }
 }

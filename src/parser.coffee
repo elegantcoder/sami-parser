@@ -1,4 +1,3 @@
-_ = require 'lodash'
 cssParse = require 'css-parse'
 langCodes = require './lang_codes.js'
 
@@ -99,8 +98,8 @@ class Parser
       item.languages[lang] = innerText
       ret.push(item)
 
-    ret = _.sortBy(ret, (syncElement) ->
-      +syncElement.startTime
+    ret.sort((a, b) ->
+      a.startTime - b.startTime
     )
 
     i = ret.length
