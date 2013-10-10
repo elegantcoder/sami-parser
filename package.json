@@ -1,6 +1,6 @@
 {
   "name": "sami-parser",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "SAMI(Synchronized Accessible Media Interchange) Parser Written in CoffeeScript",
   "scripts": {
     "test": "cake test"
@@ -19,7 +19,7 @@
   "dependencies": {
     "css-parse": "~1.5.3"
   },
-  "repository":   {
+  "repository": {
     "type": "git",
     "url": "git://github.com/elegantcoder/sami-parser.git"
   },
