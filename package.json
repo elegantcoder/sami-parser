@@ -10,7 +10,7 @@
     "parser"
   ],
   "author": "Constantine Kim",
-  "license": "BSD-2-Clause",
+  "license": "MIT",
   "devDependencies": {
     "coffee-script": "~1.6.3",
     "chai": "~1.8.0",
