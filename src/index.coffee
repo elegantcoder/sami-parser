@@ -7,6 +7,6 @@ module.exports = {
     p.parse(str)
 
   parseFile: (file) ->
-    str = file.readSync(file, {encoding: 'utf-8'})
+    str = fs.readSync(file, {encoding: 'utf-8'})
     @parse(str)
 }
