@@ -43,6 +43,14 @@ langCodes = require './lang_codes.js'
   });
 }`
 
+reOpenSync = /<sync/i
+reLineEnding = /\r\n?|\n/g
+reBrokenTag = /<[a-z]*[^>]*<[a-z]*/g
+reStartTime = /<sync[^>]+?start[^=]*=[^0-9]*([0-9]*)["^0-9"]*/i
+reBr = /<br[^>]*>/ig
+reStyle = /<style[^>]*>([\s\S]*?)<\/style[^>]*>/i
+reComment = /(<!--|-->)/g
+
 class Parser
   @defaultLanguage: {className: 'KRCC', lang: 'ko', reClassName: /class[^=]*?=["']?(KRCC)["']?/i}
   @defaultLanguageCode: 'ko' 
@@ -58,16 +66,16 @@ class Parser
     ret = []
 
     while true
-      startTagIdx = str.search(/<sync/i)
+      startTagIdx = str.search(reOpenSync)
       break if nextStartTagIdx <= 0 || startTagIdx < 0
-      nextStartTagIdx = str.slice(startTagIdx+1).search(/<sync/i)+1
+      nextStartTagIdx = str.slice(startTagIdx+1).search(reOpenSync)+1
       if nextStartTagIdx > 0
         element = str.slice(startTagIdx, startTagIdx+nextStartTagIdx)
       else
         element = str.slice(startTagIdx)
 
-      lineNum += str.slice(0, startTagIdx).match(/\r\n?|\n/g)?.length or 0 
-      if isBroken = /<[a-z]*[^>]*<[a-z]*/g.test(element)
+      lineNum += str.slice(0, startTagIdx).match(reLineEnding)?.length or 0 
+      if isBroken = reBrokenTag.test(element)
         e = new Error('ERROR_BROKEN_TAGS')
         e.line = lineNum
         e.context = element
@@ -75,7 +83,7 @@ class Parser
 
       str = str.slice(startTagIdx+nextStartTagIdx)
 
-      startTime = +element.match(/<sync[^>]+?start[^=]*=[^0-9]*([0-9]*)["^0-9"]*/i)?[1] or -1
+      startTime = +element.match(reStartTime)?[1] or -1
 
       if startTime < 0
         e = new Error('ERROR_INVALID_TIME')
@@ -83,15 +91,15 @@ class Parser
         e.context = element
         @errors.push(e)
 
-      lineNum += element.match(/\r\n?|\n/g)?.length or 0
+      lineNum += element.match(reLineEnding)?.length or 0
 
       for lang in @availableLanguages when lang.reClassName.test element
         lang = lang.lang
         break;
 
       lang or= @defaultLanguageCode
-      element = element.replace(/[\r\n]/g, '')
-      element = element.replace(/<br[^>]*>/ig, "\n")
+      element = element.replace(reLineEnding, '')
+      element = element.replace(reBr, "\n")
       innerText = strip_tags(element).trim()
       lang = @getLanguage(element)
       item = {startTime, languages: {}, contents: innerText}
@@ -120,8 +128,8 @@ class Parser
 
   getAvailableLanguages: (str) ->
     try
-      matched = str.match(/<style[^>]*>([\s\S]*?)<\/style[^>]*>/i)?[1] or ''
-      matched = matched.replace(/(<!--|-->)/g, '')
+      matched = str.match(reStyle)?[1] or ''
+      matched = matched.replace(reComment, '')
       parsed = cssParse matched
 
       for rule in parsed.stylesheet.rules
