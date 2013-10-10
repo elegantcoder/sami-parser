@@ -1,7 +1,7 @@
 {
   "name": "sami-parser",
   "version": "0.1.0",
-  "description": "SAMI(Synchronized Accessible Media Interchange) Parser Written in CoffeeScript",
+  "description": "JavaScript SAMI(Synchronized Accessible Media Interchange) parser for nodejs.",
   "scripts": {
     "test": "cake test"
   },
