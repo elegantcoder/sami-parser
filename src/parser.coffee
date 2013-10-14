@@ -1,6 +1,28 @@
 cssParse = require 'css-parse'
 langCodes = require './lang_codes.js'
 definedLangs = {}
+# from http://coffeescriptcookbook.com/chapters/classes_and_objects/cloning
+clone = (obj) ->
+  if not obj? or typeof obj isnt 'object'
+    return obj
+
+  if obj instanceof Date
+    return new Date(obj.getTime()) 
+
+  if obj instanceof RegExp
+    flags = ''
+    flags += 'g' if obj.global?
+    flags += 'i' if obj.ignoreCase?
+    flags += 'm' if obj.multiline?
+    flags += 'y' if obj.sticky?
+    return new RegExp(obj.source, flags) 
+
+  newInstance = new obj.constructor()
+
+  for key of obj
+    newInstance[key] = clone obj[key]
+
+  return newInstance
 
 # from http://phpjs.org/functions/strip_tags/
 `function strip_tags(input, allowed) {
@@ -195,6 +217,9 @@ module.exports = (sami, options) ->
       errors.push error = new Error('ERROR_INVALID_LANGUAGE_DEFINITION')
       return
 
+  if options?.definedLangs
+    for key, value of options.definedLangs
+      definedLangs[key] = value
   getDefinedLangs()
   result = parse()
   return {result, errors: errors}

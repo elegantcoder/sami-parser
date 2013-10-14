@@ -70,9 +70,20 @@ parse tree:
 ## Usage
 
 	parser = require('sami-parser')
-	parser.parse('<sync start="123">Lorem ipsum</sync>')
+	parser.parse('<sync start="123">Lorem ipsum</sync>', options = {})
 	// or
-	parser.parseFile('lorem.smi')
+	parser.parseFile('lorem.smi', options = {})
+
+## Available Options
+
+definedLangs: pre-defined language object. Will be used when unable to recognize language code.
+
+example: 
+
+    KRCC: { # class name in <sync> ex) <SYNC start="123"><P class="KRCC">
+	  lang: 'ko'	# ISO639
+      reClassName: new RegExp("class[^=]*?=[\"'\S]*(KRCC)['\"\S]?", 'i') # Regular Expression to test the class name.
+    }
 
 ## License
 MIT
