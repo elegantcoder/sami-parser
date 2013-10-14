@@ -1,6 +1,15 @@
 cssParse = require 'css-parse'
 langCodes = require './lang_codes.js'
-definedLangs = {}
+
+reOpenSync = /<sync/i
+reCloseSync = /<sync|<\/body|<\/sami/i
+reLineEnding = /\r\n?|\n/g
+reBrokenTag = /<[a-z]*[^>]*<[a-z]*/g
+reStartTime = /<sync[^>]+?start[^=]*=[^0-9]*([0-9]*)["^0-9"]*/i
+reBr = /<br[^>]*>/ig
+reStyle = /<style[^>]*>([\s\S]*?)<\/style[^>]*>/i
+reComment = /(<!--|-->)/g
+
 # from http://coffeescriptcookbook.com/chapters/classes_and_objects/cloning
 clone = (obj) ->
   if not obj? or typeof obj isnt 'object'
@@ -66,15 +75,6 @@ clone = (obj) ->
   });
 }`
 
-reOpenSync = /<sync/i
-reCloseSync = /<sync|<\/body|<\/sami/i
-reLineEnding = /\r\n?|\n/g
-reBrokenTag = /<[a-z]*[^>]*<[a-z]*/g
-reStartTime = /<sync[^>]+?start[^=]*=[^0-9]*([0-9]*)["^0-9"]*/i
-reBr = /<br[^>]*>/ig
-reStyle = /<style[^>]*>([\s\S]*?)<\/style[^>]*>/i
-reComment = /(<!--|-->)/g
-
 _sort = (langItem) ->
   langItem.sort((a, b) ->
     if (res = a.startTime - b.startTime) is 0
@@ -111,23 +111,14 @@ _mergeMultiLanguages = (arr) ->
   return ret
 
 module.exports = (sami, options) ->
-  errors = []
-  definedLangs = {
-    KRCC: {
-      lang: 'ko'
-      reClassName: new RegExp("class[^=]*?=[\"'\S]*(KRCC)['\"\S]?", 'i')
-    },
-    ENCC: {
-      lang: 'en'
-      reClassName: new RegExp("class[^=]*?=[\"'\S]*(ENCC)['\"\S]?", 'i')
-    },
-    JPCC: {
-      lang: 'ja'
-      reClassName: new RegExp("class[^=]*?=[\"'\S]*(JPCC)['\"\S]?", 'i')
-    }
-  }
 
   parse = () ->
+    error = (error) ->
+      e = new Error(error)
+      e.line = lineNum
+      e.context = element
+      errors.push(e)
+
     lineNum = 1
     ret = []
     tempRet = {}
@@ -142,29 +133,15 @@ module.exports = (sami, options) ->
       else
         element = str.slice(startTagIdx)
 
-      elementLineNum = lineNum += str.slice(0, startTagIdx).match(reLineEnding)?.length or 0 
-      if isBroken = reBrokenTag.test(element)
-        e = new Error('ERROR_BROKEN_TAGS')
-        e.line = elementLineNum
-        e.context = element
-        errors.push(e)
+      lineNum += str.slice(0, startTagIdx).match(reLineEnding)?.length or 0 
+      error('ERROR_BROKEN_TAGS') if isBroken = reBrokenTag.test(element)
 
       str = str.slice(startTagIdx+nextStartTagIdx)
-
       startTime = +element.match(reStartTime)?[1]
-
-      if startTime is null or startTime < 0
-        e = new Error('ERROR_INVALID_TIME')
-        e.line = elementLineNum
-        e.context = element
-        errors.push(e)
+      error('ERROR_INVALID_TIME') if startTime is null or startTime < 0
       
       lang = getLanguage(element)
-      if !lang
-        e = new Error('ERROR_INVALID_LANGUAGE')
-        e.line = elementLineNum
-        e.context = element
-        errors.push(e)
+      error('ERROR_INVALID_LANGUAGE') if !lang
 
       lineNum += element.match(reLineEnding)?.length or 0
       element = element.replace(reLineEnding, '')
@@ -217,9 +194,39 @@ module.exports = (sami, options) ->
       errors.push error = new Error('ERROR_INVALID_LANGUAGE_DEFINITION')
       return
 
+  errors = []
+  definedLangs = {
+    KRCC: {
+      lang: 'ko'
+      reClassName: new RegExp("class[^=]*?=[\"'\S]*(KRCC)['\"\S]?", 'i')
+    },
+    KR: {
+      lang: 'ko'
+      reClassName: new RegExp("class[^=]*?=[\"'\S]*(KR)['\"\S]?", 'i')
+    },
+    ENCC: {
+      lang: 'en'
+      reClassName: new RegExp("class[^=]*?=[\"'\S]*(ENCC)['\"\S]?", 'i')
+    },
+    EGCC: {
+      lang: 'en'
+      reClassName: new RegExp("class[^=]*?=[\"'\S]*(EGCC)['\"\S]?", 'i')
+    },
+    EN: {
+      lang: 'en'
+      reClassName: new RegExp("class[^=]*?=[\"'\S]*(EN)['\"\S]?", 'i')
+    },
+    JPCC: {
+      lang: 'ja'
+      reClassName: new RegExp("class[^=]*?=[\"'\S]*(JPCC)['\"\S]?", 'i')
+    }
+  }
+
   if options?.definedLangs
     for key, value of options.definedLangs
       definedLangs[key] = value
+
+  sami = sami.trim()
   getDefinedLangs()
   result = parse()
   return {result, errors: errors}
