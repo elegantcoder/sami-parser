@@ -91,12 +91,12 @@ _mergeMultiLanguages = (arr) ->
 class Parser
   @defaultLanguage: {className: 'KRCC', lang: 'ko', reClassName: /class[^=]*?=["']?(KRCC)["']?/i}
   @defaultLanguageCode: 'ko' 
-  availableLanguages: null
+  definedLangs: null
   errors: null
 
   constructor: () ->
     @errors = []
-    @availableLanguages = []
+    @definedLangs = []
 
   _parse: (str) ->
     lineNum = 1
@@ -131,7 +131,7 @@ class Parser
 
       lineNum += element.match(reLineEnding)?.length or 0
 
-      for lang in @availableLanguages when lang.reClassName.test element
+      for lang in @definedLangs when lang.reClassName.test element
         lang = lang.lang
         break;
 
@@ -157,11 +157,11 @@ class Parser
     return ret
 
   getLanguage: (element) ->
-    for lang in @availableLanguages when lang.reClassName.test element
+    for lang in @definedLangs when lang.reClassName.test element
       return lang.lang
     return Parser.defaultLanguage.lang
 
-  getAvailableLanguages: (str) ->
+  getDefinedLangs: (str) ->
     try
       matched = str.match(reStyle)?[1] or ''
       matched = matched.replace(reComment, '')
@@ -181,16 +181,16 @@ class Parser
                   lang: lang
                   reClassName: new RegExp("class[^=]*?=[\"']?(#{className})['\"]?", 'i')
                 }
-                @availableLanguages.push language
+                @definedLangs.push language
               else
                 throw Error()
     catch e
-      @errors.push error = new Error('ERROR_INVALID_LANGUAGE')
-      @availableLanguages.push Parser.defaultLanguage # parse failed
+      @errors.push error = new Error('ERROR_INVALID_LANGUAGE_DEFINITION')
+      @definedLangs.push Parser.defaultLanguage # parse failed
       return
 
   parse: (str) ->
-    @getAvailableLanguages(str)
+    @getDefinedLangs(str)
     result = @_parse(str)
     return {result, errors: @errors}
 

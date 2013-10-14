@@ -17,7 +17,7 @@
   ],
   "errors": [
     {
-      "message": "ERROR_INVALID_LANGUAGE"
+      "message": "ERROR_INVALID_LANGUAGE_DEFINITION"
     }
   ]
 }
