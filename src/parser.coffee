@@ -77,8 +77,7 @@ _mergeMultiLanguages = (arr) ->
 
   for val, i in arr
     key = val.startTime+','+val.endTime
-    if dict[key] isnt undefined
-      idx = dict[key]
+    if (idx = dict[key]) isnt undefined
       for lang, content of val.languages
         ret[idx].languages[lang] = content
     else
