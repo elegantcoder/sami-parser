@@ -4,6 +4,7 @@ sami-parser
 JavaScript SAMI(Synchronized Accessible Media Interchange) parser for nodejs.
 
 ## Install
+
 	npm install sami-parser
 
 ## Example
@@ -76,14 +77,18 @@ parse tree:
 
 ## Available Options
 
-definedLangs: pre-defined language object. Will be used when unable to recognize language code.
+* `definedLangs` - pre-defined language object. Will be used when unable to recognize language code. Default is `{}`.
+* `duration` - default duration between startTime and endTime. Default `10000`(10000ms; 10 seconds).
 
 example: 
 
-    KRCC: { # class name in <sync> ex) <SYNC start="123"><P class="KRCC">
-	  lang: 'ko'	# ISO639
-      reClassName: new RegExp("class[^=]*?=[\"'\S]*(KRCC)['\"\S]?", 'i') # Regular Expression to test the class name.
-    }
+    definedLangs: {
+	    KRCC: { # class name in <sync> ex) <SYNC start="123"><P class="KRCC">
+		  lang: 'ko'	# ISO639
+	      reClassName: new RegExp("class[^=]*?=[\"'\S]*(KRCC)['\"\S]?", 'i') # Regular Expression to match the class name.
+	    }
+	},
+	duration: 10000
 
 ## License
 MIT

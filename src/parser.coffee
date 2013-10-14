@@ -83,17 +83,6 @@ _sort = (langItem) ->
       return res
   )
 
-_makeEndTime = (langItem) ->
-  i = langItem.length
-  while i--
-    item = langItem[i]
-    langItem[i-1]?.endTime = item.startTime
-    if !item.contents or item.contents is '&nbsp;'
-      langItem.splice i, 1
-    else
-      delete langItem[i].contents
-  langItem
-
 _mergeMultiLanguages = (arr) ->
   dict = {}
   i = arr.length 
@@ -156,7 +145,7 @@ module.exports = (sami, options) ->
 
     for lang, langItem of tempRet
       langItem = _sort(langItem)
-      langItem = _makeEndTime(langItem)
+      langItem = makeEndTime(langItem)
 
       ret = ret.concat(langItem)
 
@@ -194,6 +183,19 @@ module.exports = (sami, options) ->
       errors.push error = new Error('ERROR_INVALID_LANGUAGE_DEFINITION')
       return
 
+  makeEndTime = (langItem) ->
+    i = langItem.length
+    while i--
+      item = langItem[i]
+      langItem[i-1]?.endTime = item.startTime
+      if !item.contents or item.contents is '&nbsp;'
+        langItem.splice i, 1
+      else
+        delete langItem[i].contents
+        if !item.endTime
+          item.endTime = item.startTime + duration
+    return langItem
+
   errors = []
   definedLangs = {
     KRCC: {
@@ -225,6 +227,8 @@ module.exports = (sami, options) ->
   if options?.definedLangs
     for key, value of options.definedLangs
       definedLangs[key] = value
+
+  duration = options?.duration or 10000
 
   sami = sami.trim()
   getDefinedLangs()
