@@ -75,7 +75,7 @@ parse tree:
 	// or
 	parser.parseFile('lorem.smi', options = {})
 
-## Available Options
+## Options
 
 * `definedLangs` - pre-defined language object. Will be used when unable to recognize language code. Default is `{}`.
 * `duration` - default duration between startTime and endTime. Default `10000`(10000ms; 10 seconds).
