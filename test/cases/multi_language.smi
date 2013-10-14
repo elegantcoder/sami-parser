@@ -21,7 +21,8 @@ Lorem ipsum dolor sit amet, consectetur<br><b>Lorem ipsum dolor sit amet, consec
 <SYNC Start=10102><P Class=KRCC>&nbsp;
 <SYNC Start=10122 ><P Class=KRCC>&nbsp;
 <SYNC Start=10142 ><P Class=KRCC>&nbsp;
-<SYNC Start=10162 ><P Class=KRCC>&nbsp;
+<SYNC Start=10162 ><P Class=KRCC>Lorem ipsum dolor sit amet, consectetur<br><b>Lorem ipsum dolor sit amet, consectetur<br>Lorem ipsum dolor sit amet, consectetur
+<SYNC Start=10183 ><P Class=KRCC>&nbsp;
 <SYNC Start=17976><P Class=KRCC>
 Lorem ipsum dolor sit amet, consectetur<br><b>Lorem ipsum dolor sit amet, consectetur<br>Lorem ipsum dolor sit amet, consectetur
 <SYNC Start=7007908><P Class=KRCC>&nbsp;
@@ -34,7 +35,8 @@ Lorem ipsum dolor sit amet, consectetur<br><b>Lorem ipsum dolor sit amet, consec
 <SYNC Start=10102><P Class=ENCC>&nbsp;
 <SYNC Start=10122 ><P Class=ENCC>Lorem ipsum dolor sit amet, consectetur<br><b>Lorem ipsum dolor sit amet, consectetur<br>Lorem ipsum dolor sit amet, consectetur
 <SYNC Start=10142 ><P Class=ENCC>&nbsp;
-<SYNC Start=10162 ><P Class=ENCC>&nbsp;
+<SYNC Start=10162 ><P Class=ENCC>Lorem ipsum dolor sit amet, consectetur<br><b>Lorem ipsum dolor sit amet, consectetur<br>Lorem ipsum dolor sit amet, consectetur
+<SYNC Start=10182 ><P Class=ENCC>&nbsp;
 <SYNC Start=17976><P Class=ENCC>
 Lorem ipsum dolor sit amet, consectetur<br><b>Lorem ipsum dolor sit amet, consectetur<br>Lorem ipsum dolor sit amet, consectetur
 <SYNC Start=7007908><P Class=ENCC>&nbsp;

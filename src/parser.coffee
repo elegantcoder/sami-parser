@@ -53,7 +53,10 @@ reComment = /(<!--|-->)/g
 
 _sort = (langItem) ->
   langItem.sort((a, b) ->
-    a.startTime - b.startTime
+    if (res = a.startTime - b.startTime) is 0
+      return a.endTime - b.endTime
+    else
+      return res
   )
 
 _makeEndTime = (langItem) ->

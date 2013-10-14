@@ -16,6 +16,20 @@
       "endTime": 10142
     },
     {
+      "startTime": 10162,
+      "languages": {
+        "en": "Lorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur"
+      },
+      "endTime": 10182
+    },
+    {
+      "startTime": 10162,
+      "languages": {
+        "ko": "Lorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur"
+      },
+      "endTime": 10183
+    },
+    {
       "startTime": 17976,
       "languages": {
         "ko": "Lorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur",
