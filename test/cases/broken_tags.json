@@ -17,7 +17,7 @@
     {
       "startTime": 2306070,
       "languages": {
-        "kr": "<P Class=ENCC한 시간이나 앉아서 기다리게 만들 거라는군.<"
+        "ko": "<P Class=KRCC한 시간이나 앉아서 기다리게 만들 거라는군.<"
       },
       "endTime": 2313871
     },
@@ -48,7 +48,7 @@
     {
       "message": "ERROR_BROKEN_TAGS",
       "line": 33,
-      "context": "<SYNC Start=2306070><P Class=ENCC한>\n<P Class=ENCC한 시간이나 앉아서 기다리게 만들 거라는군.\n<\n"
+      "context": "<SYNC Start=2306070><P Class=KRCC>\n<P Class=KRCC한 시간이나 앉아서 기다리게 만들 거라는군.\n<\n"
     }
   ]
 }

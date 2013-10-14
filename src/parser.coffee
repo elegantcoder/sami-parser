@@ -51,6 +51,41 @@ reBr = /<br[^>]*>/ig
 reStyle = /<style[^>]*>([\s\S]*?)<\/style[^>]*>/i
 reComment = /(<!--|-->)/g
 
+_sort = (langItem) ->
+  langItem.sort((a, b) ->
+    a.startTime - b.startTime
+  )
+
+_makeEndTime = (langItem) ->
+  i = langItem.length
+  while i--
+    item = langItem[i]
+    langItem[i-1]?.endTime = item.startTime
+    if !item.contents or item.contents is '&nbsp;'
+      langItem.splice i, 1
+    else
+      delete langItem[i].contents
+  langItem
+
+_mergeMultiLanguages = (arr) ->
+  dict = {}
+  i = arr.length 
+  ret = []
+
+  for val, i in arr
+    key = val.startTime+','+val.endTime
+    if dict[key] isnt undefined
+      idx = dict[key]
+      for lang, content of val.languages
+        ret[idx].languages[lang] = content
+    else
+      ret.push val
+      dict[key] = ret.length-1
+
+  return ret
+
+
+
 class Parser
   @defaultLanguage: {className: 'KRCC', lang: 'ko', reClassName: /class[^=]*?=["']?(KRCC)["']?/i}
   @defaultLanguageCode: 'ko' 
@@ -64,6 +99,7 @@ class Parser
   _parse: (str) ->
     lineNum = 1
     ret = []
+    tempRet = {}
 
     while true
       startTagIdx = str.search(reOpenSync)
@@ -104,21 +140,18 @@ class Parser
       lang = @getLanguage(element)
       item = {startTime, languages: {}, contents: innerText}
       item.languages[lang] = innerText
-      ret.push(item)
 
-    ret.sort((a, b) ->
-      a.startTime - b.startTime
-    )
+      tempRet[lang] or= []
+      tempRet[lang].push(item)
 
-    i = ret.length
-    while i--
-      item = ret[i]
-      ret[i-1]?.endTime = item.startTime
-      if !item.contents or item.contents is '&nbsp;'
-        ret.splice i, 1
-      else
-        delete ret[i].contents
+    for lang, langItem of tempRet
+      langItem = _sort(langItem)
+      langItem = _makeEndTime(langItem)
 
+      ret = ret.concat(langItem)
+
+    ret = _mergeMultiLanguages(ret)
+    ret = _sort(ret)
     return ret
 
   getLanguage: (element) ->

@@ -1,0 +1,28 @@
+{
+  "result": [
+    {
+      "startTime": 6144,
+      "languages": {
+        "ko": "Lorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur",
+        "en": "Lorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur"
+      },
+      "endTime": 10102
+    },
+    {
+      "startTime": 10122,
+      "languages": {
+        "en": "Lorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur"
+      },
+      "endTime": 10142
+    },
+    {
+      "startTime": 17976,
+      "languages": {
+        "ko": "Lorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur",
+        "en": "Lorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur\nLorem ipsum dolor sit amet, consectetur"
+      },
+      "endTime": 7007908
+    }
+  ],
+  "errors": []
+}
