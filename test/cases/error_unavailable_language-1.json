@@ -18,6 +18,16 @@
   "errors": [
     {
       "message": "ERROR_INVALID_LANGUAGE_DEFINITION"
+    },
+    {
+      "message": "ERROR_INVALID_LANGUAGE",
+      "line": 19,
+      "context": "<SYNC Start=10000000>&nbsp;\n"
+    },
+    {
+      "message": "ERROR_INVALID_LANGUAGE",
+      "line": 20,
+      "context": "<SYNC Start=10000001>&nbsp;\n"
     }
   ]
 }

@@ -14,6 +14,9 @@
 <SYNC Start=10102><P Class=KRCC>&nbsp;
 <SYNC Start=17976><P Class=KRCC>
 <font face=돋움>Lorem ipsum dolor sit amet, consectetur<br><b>Lorem ipsum dolor sit amet, consectetur</b><br><font size=2>Lorem ipsum dolor sit amet, consectetur
-<SYNC Start=7007908><P Class=ENCC>&nbsp;
+<SYNC Start=7007908><P Class=KRCC>&nbsp;
+
+<SYNC Start=10000000>&nbsp;
+<SYNC Start=10000001>&nbsp;
 </BODY>
 </SAMI>

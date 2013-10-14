@@ -44,6 +44,7 @@ langCodes = require './lang_codes.js'
 }`
 
 reOpenSync = /<sync/i
+reCloseSync = /<sync|<\/body|<\/sami/i
 reLineEnding = /\r\n?|\n/g
 reBrokenTag = /<[a-z]*[^>]*<[a-z]*/g
 reStartTime = /<sync[^>]+?start[^=]*=[^0-9]*([0-9]*)["^0-9"]*/i
@@ -86,17 +87,26 @@ _mergeMultiLanguages = (arr) ->
 
   return ret
 
-
-
 class Parser
-  @defaultLanguage: {className: 'KRCC', lang: 'ko', reClassName: /class[^=]*?=["']?(KRCC)["']?/i}
-  @defaultLanguageCode: 'ko' 
   definedLangs: null
   errors: null
 
   constructor: () ->
     @errors = []
-    @definedLangs = []
+    @definedLangs = {
+      KRCC: {
+        lang: 'ko'
+        reClassName: new RegExp("class[^=]*?=[\"'\S]*(KRCC)['\"\S]?", 'i')
+      },
+      ENCC: {
+        lang: 'en'
+        reClassName: new RegExp("class[^=]*?=[\"'\S]*(ENCC)['\"\S]?", 'i')
+      },
+      JPCC: {
+        lang: 'ja'
+        reClassName: new RegExp("class[^=]*?=[\"'\S]*(JPCC)['\"\S]?", 'i')
+      }
+    }
 
   _parse: (str) ->
     lineNum = 1
@@ -106,7 +116,7 @@ class Parser
     while true
       startTagIdx = str.search(reOpenSync)
       break if nextStartTagIdx <= 0 || startTagIdx < 0
-      nextStartTagIdx = str.slice(startTagIdx+1).search(reOpenSync)+1
+      nextStartTagIdx = str.slice(startTagIdx+1).search(reCloseSync)+1
       if nextStartTagIdx > 0
         element = str.slice(startTagIdx, startTagIdx+nextStartTagIdx)
       else
@@ -128,20 +138,21 @@ class Parser
         e.line = lineNum
         e.context = element
         @errors.push(e)
+      
+      lang = @getLanguage(element)
+      if !lang
+        e = new Error('ERROR_INVALID_LANGUAGE')
+        e.line = lineNum
+        e.context = element
+        @errors.push(e)
 
       lineNum += element.match(reLineEnding)?.length or 0
-
-      for lang in @definedLangs when lang.reClassName.test element
-        lang = lang.lang
-        break;
-
-      lang or= @defaultLanguageCode
       element = element.replace(reLineEnding, '')
       element = element.replace(reBr, "\n")
       innerText = strip_tags(element).trim()
-      lang = @getLanguage(element)
       item = {startTime, languages: {}, contents: innerText}
-      item.languages[lang] = innerText
+      if lang
+        item.languages[lang] = innerText
 
       tempRet[lang] or= []
       tempRet[lang].push(item)
@@ -156,10 +167,10 @@ class Parser
     ret = _sort(ret)
     return ret
 
+  # returns one of the defined languages or the element's first className.
   getLanguage: (element) ->
-    for lang in @definedLangs when lang.reClassName.test element
+    for className, lang of @definedLangs when lang.reClassName.test element
       return lang.lang
-    return Parser.defaultLanguage.lang
 
   getDefinedLangs: (str) ->
     try
@@ -176,17 +187,14 @@ class Parser
               className = selector.slice(1) # pass dot (.ENCC -> ENCC)
               lang = declaration.value.slice(0,2)
               if ~langCodes.indexOf lang
-                language = {
-                  className: className
+                @definedLangs[className] = {
                   lang: lang
-                  reClassName: new RegExp("class[^=]*?=[\"']?(#{className})['\"]?", 'i')
+                  reClassName: new RegExp("class[^=]*?=[\"'\S]*(#{className})['\"\S]?", 'i')
                 }
-                @definedLangs.push language
               else
                 throw Error()
     catch e
       @errors.push error = new Error('ERROR_INVALID_LANGUAGE_DEFINITION')
-      @definedLangs.push Parser.defaultLanguage # parse failed
       return
 
   parse: (str) ->
