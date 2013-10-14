@@ -1,5 +1,6 @@
 cssParse = require 'css-parse'
 langCodes = require './lang_codes.js'
+definedLangs = {}
 
 # from http://phpjs.org/functions/strip_tags/
 `function strip_tags(input, allowed) {
@@ -87,31 +88,28 @@ _mergeMultiLanguages = (arr) ->
 
   return ret
 
-class Parser
-  definedLangs: null
-  errors: null
-
-  constructor: () ->
-    @errors = []
-    @definedLangs = {
-      KRCC: {
-        lang: 'ko'
-        reClassName: new RegExp("class[^=]*?=[\"'\S]*(KRCC)['\"\S]?", 'i')
-      },
-      ENCC: {
-        lang: 'en'
-        reClassName: new RegExp("class[^=]*?=[\"'\S]*(ENCC)['\"\S]?", 'i')
-      },
-      JPCC: {
-        lang: 'ja'
-        reClassName: new RegExp("class[^=]*?=[\"'\S]*(JPCC)['\"\S]?", 'i')
-      }
+module.exports = (sami, options) ->
+  errors = []
+  definedLangs = {
+    KRCC: {
+      lang: 'ko'
+      reClassName: new RegExp("class[^=]*?=[\"'\S]*(KRCC)['\"\S]?", 'i')
+    },
+    ENCC: {
+      lang: 'en'
+      reClassName: new RegExp("class[^=]*?=[\"'\S]*(ENCC)['\"\S]?", 'i')
+    },
+    JPCC: {
+      lang: 'ja'
+      reClassName: new RegExp("class[^=]*?=[\"'\S]*(JPCC)['\"\S]?", 'i')
     }
+  }
 
-  _parse: (str) ->
+  parse = () ->
     lineNum = 1
     ret = []
     tempRet = {}
+    str = sami
 
     while true
       startTagIdx = str.search(reOpenSync)
@@ -122,29 +120,29 @@ class Parser
       else
         element = str.slice(startTagIdx)
 
-      lineNum += str.slice(0, startTagIdx).match(reLineEnding)?.length or 0 
+      elementLineNum = lineNum += str.slice(0, startTagIdx).match(reLineEnding)?.length or 0 
       if isBroken = reBrokenTag.test(element)
         e = new Error('ERROR_BROKEN_TAGS')
-        e.line = lineNum
+        e.line = elementLineNum
         e.context = element
-        @errors.push(e)
+        errors.push(e)
 
       str = str.slice(startTagIdx+nextStartTagIdx)
 
-      startTime = +element.match(reStartTime)?[1] or -1
+      startTime = +element.match(reStartTime)?[1]
 
-      if startTime < 0
+      if startTime is null or startTime < 0
         e = new Error('ERROR_INVALID_TIME')
-        e.line = lineNum
+        e.line = elementLineNum
         e.context = element
-        @errors.push(e)
+        errors.push(e)
       
-      lang = @getLanguage(element)
+      lang = getLanguage(element)
       if !lang
         e = new Error('ERROR_INVALID_LANGUAGE')
-        e.line = lineNum
+        e.line = elementLineNum
         e.context = element
-        @errors.push(e)
+        errors.push(e)
 
       lineNum += element.match(reLineEnding)?.length or 0
       element = element.replace(reLineEnding, '')
@@ -168,13 +166,13 @@ class Parser
     return ret
 
   # returns one of the defined languages or the element's first className.
-  getLanguage: (element) ->
-    for className, lang of @definedLangs when lang.reClassName.test element
+  getLanguage = (element) ->
+    for className, lang of definedLangs when lang.reClassName.test element
       return lang.lang
 
-  getDefinedLangs: (str) ->
+  getDefinedLangs = () ->
     try
-      matched = str.match(reStyle)?[1] or ''
+      matched = sami.match(reStyle)?[1] or ''
       matched = matched.replace(reComment, '')
       parsed = cssParse matched
 
@@ -187,19 +185,16 @@ class Parser
               className = selector.slice(1) # pass dot (.ENCC -> ENCC)
               lang = declaration.value.slice(0,2)
               if ~langCodes.indexOf lang
-                @definedLangs[className] = {
+                definedLangs[className] = {
                   lang: lang
                   reClassName: new RegExp("class[^=]*?=[\"'\S]*(#{className})['\"\S]?", 'i')
                 }
               else
                 throw Error()
     catch e
-      @errors.push error = new Error('ERROR_INVALID_LANGUAGE_DEFINITION')
+      errors.push error = new Error('ERROR_INVALID_LANGUAGE_DEFINITION')
       return
 
-  parse: (str) ->
-    @getDefinedLangs(str)
-    result = @_parse(str)
-    return {result, errors: @errors}
-
-module.exports = Parser
+  getDefinedLangs()
+  result = parse()
+  return {result, errors: errors}
