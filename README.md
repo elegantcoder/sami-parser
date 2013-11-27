@@ -3,6 +3,8 @@ sami-parser
 
 JavaScript SAMI(Synchronized Accessible Media Interchange) parser for nodejs.
 
+https://nodei.co/npm/sami-parser.png?downloads=true
+
 ## Install
 
 	npm install sami-parser
