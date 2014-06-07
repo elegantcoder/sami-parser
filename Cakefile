@@ -15,9 +15,14 @@ module.exports =
       console.info("Exited with status: " + code) if code 
       callback(code) 
 
-task 'build', 'Compile CoffeeScript to JavaScript.', -> 
+task 'build', 'Compile CoffeeScript to JavaScript.', build = (cb) -> 
   module.exports.passthru 'coffee', '-o', 'lib/', '-c', 'src/' , (codes) ->
-    module.exports.passthru 'cp', 'src/lang_codes.js', 'lib/'
+    module.exports.passthru 'cp', 'src/lang_codes.js', 'lib/', cb
+
+task 'publish', 'Build and Version and Publish', ->
+  build ->
+      module.exports.passthru 'npm', 'publish'
+
 
 task 'test', 'Run the unit tests.', -> 
   module.exports.passthru './node_modules/.bin/mocha', '--compilers', 'coffee:coffee-script', './test/test.coffee'
