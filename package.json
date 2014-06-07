@@ -1,6 +1,6 @@
 {
   "name": "sami-parser",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "JavaScript SAMI(Synchronized Accessible Media Interchange) parser for nodejs.",
   "scripts": {
     "test": "cake test"
